@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
+import { SessionCookieOptions } from 'firebase-admin/lib/auth/base-auth';
 
 @Injectable()
 export class FirebaseService {
@@ -24,5 +25,9 @@ export class FirebaseService {
 
   getAuth() {
     return this.firebaseApp.auth();
+  }
+
+  async createSessionCookie(idToken: string, options: SessionCookieOptions) {
+    return this.getAuth().createSessionCookie(idToken, options);
   }
 }

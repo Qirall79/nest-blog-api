@@ -9,7 +9,7 @@ import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [UsersModule],
-  providers: [AuthService, FirebaseService, UsersService],
+  providers: [AuthService, FirebaseService],
   controllers: [AuthController]
 })
 export class AuthModule {}

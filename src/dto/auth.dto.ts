@@ -1,5 +1,7 @@
 export class AuthDto {
-  username: string;
+  uid: string;
+  firstName: string;
+  lastName: string;
   email: string;
   picture: string;
 }

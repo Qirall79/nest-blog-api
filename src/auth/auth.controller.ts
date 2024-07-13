@@ -1,9 +1,18 @@
-import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CookieOptions, Response } from 'express';
 import { AuthGuard } from './auth.guard';
 import { SessionGuard } from './session.guard';
 import { UsersService } from 'src/users/users.service';
+import { FirebaseService } from './firebase.service';
 
 @Controller('auth')
 export class AuthController {
@@ -15,7 +24,7 @@ export class AuthController {
 
   constructor(
     private authService: AuthService,
-    private usersService: UsersService,
+    @Inject(FirebaseService) private firebaseService: FirebaseService,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -27,12 +36,23 @@ export class AuthController {
     );
 
     res.cookie(cookie.name, cookie.value, this.cookieOptions);
-    res.send(JSON.stringify({ status: 'success' }));
+    res.send({ status: 'success' });
   }
 
-  @UseGuards(SessionGuard)
-  @Post('create')
-  async createUser(@Req() req) {
-    return await this.usersService.createUser(req.auth);
+  @Get()
+  async getSession(@Req() req, @Res() res) {
+    const session = req.cookies.session;
+    if (!session) {
+      res.status(401).send({ isLogged: false });
+    }
+
+    const decodedToken = this.firebaseService
+      .getAuth()
+      .verifySessionCookie(session);
+
+    if (!decodedToken) {
+      res.status(401).send({ isLogged: false });
+    }
+    res.status(200).send(decodedToken);
   }
 }

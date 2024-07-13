@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthDto } from 'src/dto/auth.dto';
 import { User } from 'src/entities/user.entity';
@@ -14,5 +14,16 @@ export class UsersService {
     const newUser = this.usersRepository.create(user);
     await this.usersRepository.save(newUser);
     return newUser;
+  }
+
+  async getUser(uid: string) {
+    const user = await this.usersRepository.findOneBy({
+      uid
+    })
+    return user;
+  }
+
+  async clearUsers() {
+    await this.usersRepository.clear()
   }
 }
