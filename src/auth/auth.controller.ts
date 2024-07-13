@@ -41,18 +41,21 @@ export class AuthController {
 
   @Get()
   async getSession(@Req() req, @Res() res) {
-    const session = req.cookies.session;
+    const session = this.firebaseService.extractSessionCookie(req);
     if (!session) {
       res.status(401).send({ isLogged: false });
     }
 
-    const decodedToken = this.firebaseService
+    const decodedToken = await this.firebaseService
       .getAuth()
       .verifySessionCookie(session);
 
     if (!decodedToken) {
       res.status(401).send({ isLogged: false });
     }
-    res.status(200).send(decodedToken);
+
+    res.status(200).send({
+      uid: decodedToken.uid,
+    });
   }
 }

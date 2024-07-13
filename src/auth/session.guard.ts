@@ -15,10 +15,9 @@ export class SessionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
-    const session = this.extractSessionCookie(req);
+    const session = this.firebaseService.extractSessionCookie(req);
 
     if (!session) return false;
-    
     else {
       try {
         const decodedToken = await this.firebaseService
@@ -30,9 +29,5 @@ export class SessionGuard implements CanActivate {
         return false;
       }
     }
-  }
-
-  extractSessionCookie(req: any) {
-    return req.headers.cookie.split('; ').filter((c: string) => c.includes('session='))[0].split('=')[1];
   }
 }

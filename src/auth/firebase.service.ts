@@ -30,4 +30,8 @@ export class FirebaseService {
   async createSessionCookie(idToken: string, options: SessionCookieOptions) {
     return this.getAuth().createSessionCookie(idToken, options);
   }
+
+  extractSessionCookie(req: any) {
+    return req.headers.cookie.split('; ').filter((c: string) => c.includes('session='))[0].split('=')[1];
+  }
 }
