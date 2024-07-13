@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Req, Res } from '@nestjs/common';
 import { CookieOptions } from 'express';
 import { FirebaseService } from './firebase.service';
 
@@ -24,5 +24,10 @@ export class AuthService {
       secure: cookieOptions.secure,
     };
     return options;
+  }
+
+  async deleteSession(@Req() req, @Res() res, cookieOptions: CookieOptions) {
+    res.clearCookie('session', cookieOptions);
+    res.status(200).send({ status: 'success' });
   }
 }

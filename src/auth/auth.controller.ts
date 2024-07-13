@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Inject,
   Post,
@@ -10,9 +11,8 @@ import {
 import { AuthService } from './auth.service';
 import { CookieOptions, Response } from 'express';
 import { AuthGuard } from './auth.guard';
-import { SessionGuard } from './session.guard';
-import { UsersService } from 'src/users/users.service';
 import { FirebaseService } from './firebase.service';
+import { SessionGuard } from './session.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -57,5 +57,11 @@ export class AuthController {
     res.status(200).send({
       uid: decodedToken.uid,
     });
+  }
+
+  @UseGuards(SessionGuard)
+  @Delete()
+  async deleteSession(@Req() req, @Res() res) {
+    await this.authService.deleteSession(req, res, this.cookieOptions);
   }
 }
