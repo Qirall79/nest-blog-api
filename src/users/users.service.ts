@@ -16,14 +16,23 @@ export class UsersService {
     return newUser;
   }
 
+  async upsertUser(user: AuthDto): Promise<AuthDto> {
+    const oldUser = this.usersRepository.findOneBy({
+      uid: user.uid,
+    });
+    const newUser = this.usersRepository.create(user);
+    await this.usersRepository.save(newUser);
+    return newUser;
+  }
+
   async getUser(uid: string) {
     const user = await this.usersRepository.findOneBy({
-      uid
-    })
+      uid,
+    });
     return user;
   }
 
   async clearUsers() {
-    await this.usersRepository.clear()
+    await this.usersRepository.clear();
   }
 }
