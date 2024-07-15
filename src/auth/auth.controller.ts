@@ -53,8 +53,13 @@ export class AuthController {
     if (!decodedToken) {
       res.status(401).send({ isLogged: false });
     }
+
     res.status(200).send({
-      uid: decodedToken.uid,
+      user: {
+        uid: decodedToken.uid,
+        email: decodedToken.email,
+        name: decodedToken.name,
+      },
     });
   }
 

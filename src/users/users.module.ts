@@ -9,6 +9,6 @@ import { FirebaseService } from 'src/auth/firebase.service';
   imports: [TypeOrmModule.forFeature([User])],
   providers: [UsersService, FirebaseService],
   controllers: [UsersController],
-  exports: [TypeOrmModule]
+  exports: [TypeOrmModule],
 })
 export class UsersModule {}

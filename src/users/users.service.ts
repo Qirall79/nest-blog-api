@@ -1,4 +1,4 @@
-import { Injectable, Req } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthDto } from 'src/dto/auth.dto';
 import { User } from 'src/entities/user.entity';
@@ -17,11 +17,11 @@ export class UsersService {
   }
 
   async upsertUser(user: AuthDto): Promise<AuthDto> {
-    const oldUser = this.usersRepository.findOneBy({
-      uid: user.uid,
-    });
     const newUser = this.usersRepository.create(user);
-    await this.usersRepository.save(newUser);
+    await this.usersRepository.upsert(newUser, {
+      conflictPaths: ['uid'],
+      skipUpdateIfNoValuesChanged: true,
+    });
     return newUser;
   }
 

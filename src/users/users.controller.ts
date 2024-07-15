@@ -10,7 +10,9 @@ export class UsersController {
   @UseGuards(SessionGuard)
   @Post('')
   async createUser(@Req() req) {
-    const [firstName, lastName] = req.auth?.name ? req.auth?.name?.split(' ') : [null, null];
+    const [firstName, lastName] = req.auth?.name
+      ? req.auth?.name?.split(' ')
+      : [null, null];
     const user: AuthDto = {
       uid: req.auth?.uid,
       firstName,
@@ -24,14 +26,18 @@ export class UsersController {
   @UseGuards(SessionGuard)
   @Put()
   async upsertUser(@Req() req) {
-    const [firstName, lastName] = req.auth?.name ? req.auth?.name?.split(' ') : [null, null];
+    const [firstName, lastName] = req.auth?.name
+      ? req.auth?.name?.split(' ')
+      : [null, null];
     const user: AuthDto = {
       uid: req.auth?.uid,
       firstName,
       lastName,
       email: req.auth?.email,
-      picture: req.auth?.email,
+      picture: req.auth?.picture,
     };
+
+    return this.usersService.upsertUser(user);
   }
 
   @UseGuards(SessionGuard)
