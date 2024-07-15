@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { SessionGuard } from 'src/auth/session.guard';
 import { UsersService } from './users.service';
 import { AuthDto } from 'src/dto/auth.dto';
@@ -9,10 +17,9 @@ export class UsersController {
 
   @UseGuards(SessionGuard)
   @Post('')
-  async createUser(@Req() req) {
-    const [firstName, lastName] = req.auth?.name
-      ? req.auth?.name?.split(' ')
-      : [null, null];
+  async createUser(@Req() req, @Body() body) {
+    const { firstName, lastName } = body;
+
     const user: AuthDto = {
       uid: req.auth?.uid,
       firstName,

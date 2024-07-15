@@ -13,6 +13,7 @@ import { CookieOptions, Response } from 'express';
 import { AuthGuard } from './auth.guard';
 import { FirebaseService } from './firebase.service';
 import { SessionGuard } from './session.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +26,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     @Inject(FirebaseService) private firebaseService: FirebaseService,
+    private usersService: UsersService,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -54,11 +56,13 @@ export class AuthController {
       res.status(401).send({ isLogged: false });
     }
 
+    const user = await this.usersService.getUser(decodedToken.uid);
+
     res.status(200).send({
       user: {
-        uid: decodedToken.uid,
-        email: decodedToken.email,
-        name: decodedToken.name,
+        uid: user?.uid,
+        email: user?.email,
+        name: `${user?.firstName} ${user?.lastName}`,
       },
     });
   }
