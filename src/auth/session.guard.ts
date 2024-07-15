@@ -4,7 +4,6 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { FirebaseService } from './firebase.service';
 
 @Injectable()
