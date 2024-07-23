@@ -4,19 +4,27 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './logger.middleware';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { UsersResolver } from './graphql/resolvers/users.resolver';
+import { FirebaseService } from './auth/firebase.service';
 
 @Module({
   imports: [
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'src/schema.gql',
+      context: ({ req }) => ({ req }),
+    }),
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      entities: [User],
+      autoLoadEntities: true,
       migrationsTableName: 'migrations',
       migrations: ['src/migration/*.ts'],
       url: process.env.DB_URL,
@@ -28,7 +36,7 @@ import { LoggerMiddleware } from './logger.middleware';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UsersResolver, FirebaseService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

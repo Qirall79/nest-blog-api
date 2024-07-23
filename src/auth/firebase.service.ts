@@ -32,9 +32,9 @@ export class FirebaseService {
   }
 
   extractSessionCookie(req: any) {
-    return req.headers.cookie
-      .split('; ')
-      .filter((c: string) => c.includes('session='))[0]
-      .split('=')[1];
+    return req.headers?.cookie
+      ?.split('; ')
+      ?.filter((c: string) => c.includes('session='))[0]
+      ?.split('=')[1];
   }
 }
