@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { UseGuards } from '@nestjs/common';
-import { Context, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GraphqlSessionGuard } from '../guards/graphqlSession.guard';
 import { User } from '../responses/user.response';
 import { User as UserEntity } from 'src/entities/user.entity';
@@ -28,6 +28,21 @@ export class UsersResolver {
       firstName: user.firstName,
       lastName: user.lastName,
       picture: user.picture,
+    };
+  }
+
+  @Mutation(() => User)
+  setCurrentUser(
+    @Context() ctx,
+    @Args({ name: 'id', type: () => Int }) id: number,
+  ): User {
+    return {
+      id,
+      uid: 'updatedID',
+      email: 'updated@gmail.com',
+      firstName: 'Jilali',
+      lastName: 'Kadour',
+      picture: '',
     };
   }
 }

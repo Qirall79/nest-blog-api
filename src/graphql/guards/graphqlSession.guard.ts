@@ -9,6 +9,7 @@ export class GraphqlSessionGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context).getContext();
     const req = ctx.req;
+
     const session = this.firebaseService.extractSessionCookie(req);
 
     if (!session) return false;

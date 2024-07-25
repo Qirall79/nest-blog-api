@@ -14,3 +14,7 @@ type User {
 type Query {
   getCurrentUser: User
 }
+
+type Mutation {
+  setCurrentUser(id: Int!): User!
+}
