@@ -2,6 +2,7 @@
 import {
   Args,
   Context,
+  Int,
   Mutation,
   Parent,
   Query,
@@ -16,6 +17,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Post as PostEntity } from 'src/entities/post.entity';
 import { User, User as UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
+import { EditPostInput } from '../inputs/editPost.input';
 
 @Resolver((of) => Post)
 @UseGuards(GraphqlSessionGuard)
@@ -43,13 +45,51 @@ export class PostsResolver {
   }
 
   @Query((type) => [Post])
-  async getPosts(@Context() ctx): Promise<Post[]> {
-    const authorId = ctx.req.auth.uid;
+  async getUserPosts(@Args('authorId') authorId: string): Promise<Post[]> {
     const posts = await this.postsRepository.findBy({
       userId: authorId,
     });
 
     return posts;
+  }
+
+  @Query((type) => [Post])
+  async getAllPosts(): Promise<Post[]> {
+    const posts = await this.postsRepository.find();
+    return posts;
+  }
+
+  @Mutation((type) => Post, { nullable: true })
+  async editPost(
+    @Args('input') input: EditPostInput,
+    @Context() ctx,
+  ): Promise<Post> {
+    const { postId, title, body } = input;
+    await this.postsRepository.update(
+      {
+        id: postId,
+      },
+      {
+        title: title,
+        body: body,
+      },
+    );
+
+    return await this.postsRepository.findOneBy({
+      id: postId,
+    });
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  async deletePost(@Args('postId') postId: number) {
+    try {
+      await this.postsRepository.delete({
+        id: postId,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   @ResolveField()

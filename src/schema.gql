@@ -2,12 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Comment {
+  id: Float!
+  body: String!
+  userId: String!
+  author: User
+}
+
 type Post {
   id: Float!
   title: String!
   body: String!
-  userId: String!
+  userId: String
   author: User
+  comments: [Comment!]
 }
 
 type User {
@@ -22,14 +30,23 @@ type User {
 
 type Query {
   getCurrentUser: User
-  getPosts: [Post!]!
+  getUserPosts(authorId: String!): [Post!]!
+  getAllPosts: [Post!]!
 }
 
 type Mutation {
   addPost(input: AddPostInput!): Post
+  editPost(input: EditPostInput!): Post
+  deletePost(postId: Float!): Boolean
 }
 
 input AddPostInput {
+  title: String!
+  body: String!
+}
+
+input EditPostInput {
+  postId: Int!
   title: String!
   body: String!
 }
