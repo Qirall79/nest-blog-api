@@ -38,6 +38,8 @@ type Mutation {
   addPost(input: AddPostInput!): Post
   editPost(input: EditPostInput!): Post
   deletePost(postId: Float!): Boolean
+  addComment(input: AddCommentInput!): Comment!
+  deleteComment(commentId: Float!): Boolean!
 }
 
 input AddPostInput {
@@ -49,4 +51,9 @@ input EditPostInput {
   postId: Int!
   title: String!
   body: String!
+}
+
+input AddCommentInput {
+  body: String!
+  postId: Float!
 }

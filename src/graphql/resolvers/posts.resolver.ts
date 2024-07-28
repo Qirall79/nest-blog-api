@@ -16,8 +16,10 @@ import { AddPostInput } from '../inputs/addPost.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post as PostEntity } from 'src/entities/post.entity';
 import { User, User as UserEntity } from 'src/entities/user.entity';
+import { Comment as CommentEntity } from 'src/entities/comment.entity';
 import { Repository } from 'typeorm';
 import { EditPostInput } from '../inputs/editPost.input';
+import { Comment } from '../responses/comment.response';
 
 @Resolver((of) => Post)
 @UseGuards(GraphqlSessionGuard)
@@ -27,6 +29,8 @@ export class PostsResolver {
     private postsRepository: Repository<PostEntity>,
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
+    @InjectRepository(CommentEntity)
+    private commentsRepository: Repository<CommentEntity>,
   ) {}
 
   @Mutation((type) => Post, { nullable: true })
@@ -99,5 +103,14 @@ export class PostsResolver {
     });
 
     return user;
+  }
+
+  @ResolveField()
+  async comments(@Parent() post: Post): Promise<Comment[]> {
+    const comments = await this.commentsRepository.findBy({
+      post,
+    });
+
+    return comments;
   }
 }

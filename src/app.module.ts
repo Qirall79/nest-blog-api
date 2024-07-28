@@ -11,6 +11,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersResolver } from './graphql/resolvers/users.resolver';
 import { FirebaseService } from './auth/firebase.service';
 import { PostsResolver } from './graphql/resolvers/posts.resolver';
+import { CommentResolver } from './graphql/resolvers/comments.resolver';
 
 @Module({
   imports: [
@@ -37,7 +38,13 @@ import { PostsResolver } from './graphql/resolvers/posts.resolver';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService, UsersResolver, PostsResolver, FirebaseService],
+  providers: [
+    AppService,
+    UsersResolver,
+    PostsResolver,
+    CommentResolver,
+    FirebaseService,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
