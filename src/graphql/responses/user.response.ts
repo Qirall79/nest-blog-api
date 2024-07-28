@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Post } from './post.response';
 
 @ObjectType()
 export class User {
@@ -19,4 +21,7 @@ export class User {
 
   @Field({ nullable: true })
   picture: string;
+
+  @Field((type) => [Post], { nullable: true })
+  posts: Post[];
 }

@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Post {
+  id: Float!
+  title: String!
+  body: String!
+  userId: String!
+  author: User
+}
+
 type User {
   id: Float!
   uid: String!
@@ -9,12 +17,19 @@ type User {
   lastName: String
   email: String
   picture: String
+  posts: [Post!]
 }
 
 type Query {
   getCurrentUser: User
+  getPosts: [Post!]!
 }
 
 type Mutation {
-  setCurrentUser(id: Int!): User!
+  addPost(input: AddPostInput!): Post
+}
+
+input AddPostInput {
+  title: String!
+  body: String!
 }
