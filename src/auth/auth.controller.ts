@@ -63,6 +63,7 @@ export class AuthController {
         uid: user?.uid,
         email: user?.email,
         name: `${user?.firstName} ${user?.lastName}`,
+        picture: user.picture,
       },
     });
   }
