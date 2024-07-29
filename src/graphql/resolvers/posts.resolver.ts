@@ -42,7 +42,7 @@ export class PostsResolver {
     const newPost = this.postsRepository.create({
       userId: authorId,
       title: input.title,
-      body: input.title,
+      body: input.body,
     });
 
     return await this.postsRepository.save(newPost);
@@ -55,6 +55,15 @@ export class PostsResolver {
     });
 
     return posts;
+  }
+
+  @Query((type) => Post)
+  async getPost(@Args('postId') postId: number): Promise<Post> {
+    const post = await this.postsRepository.findOneBy({
+      id: postId,
+    });
+
+    return post;
   }
 
   @Query((type) => [Post])

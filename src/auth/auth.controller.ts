@@ -57,7 +57,6 @@ export class AuthController {
     }
 
     const user = await this.usersService.getUser(decodedToken.uid);
-
     res.status(200).send({
       user: {
         uid: user?.uid,

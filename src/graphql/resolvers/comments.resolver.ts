@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Context,
+  Mutation,
+  Parent,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { Comment } from '../responses/comment.response';
 import { AddCommentInput } from '../inputs/addComment.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +14,8 @@ import { Comment as CommentEntity } from 'src/entities/comment.entity';
 import { Repository } from 'typeorm';
 import { UseGuards } from '@nestjs/common';
 import { GraphqlSessionGuard } from '../guards/graphqlSession.guard';
+import { User } from '../responses/user.response';
+import { User as UserEntity } from 'src/entities/user.entity';
 
 @Resolver((of) => Comment)
 @UseGuards(GraphqlSessionGuard)
@@ -14,6 +23,8 @@ export class CommentResolver {
   constructor(
     @InjectRepository(CommentEntity)
     private commentsRepository: Repository<CommentEntity>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
   @Mutation(() => Comment)
@@ -22,6 +33,9 @@ export class CommentResolver {
     @Context() ctx,
   ): Promise<Comment> {
     const authorId = ctx.req.auth.uid;
+    const user = await this.usersRepository.findOneBy({
+      uid: authorId,
+    });
     const { body, postId } = input;
 
     const comment = this.commentsRepository.create({
@@ -46,5 +60,14 @@ export class CommentResolver {
     } catch (error) {
       return false;
     }
+  }
+
+  @ResolveField()
+  async author(@Parent() comment: Comment): Promise<User> {
+    const user = await this.usersRepository.findOneBy({
+      uid: comment.userId,
+    });
+
+    return user;
   }
 }

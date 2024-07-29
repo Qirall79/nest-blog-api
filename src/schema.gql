@@ -31,6 +31,7 @@ type User {
 type Query {
   getCurrentUser: User
   getUserPosts(authorId: String!): [Post!]!
+  getPost(postId: Float!): Post!
   getAllPosts: [Post!]!
 }
 

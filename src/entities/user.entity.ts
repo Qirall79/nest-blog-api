@@ -25,12 +25,14 @@ export class User {
   @OneToMany(() => Post, (post) => post.author, {
     onDelete: 'CASCADE',
     nullable: true,
+    cascade: true,
   })
   posts: Post[];
 
   @OneToMany(() => Comment, (comment) => comment.author, {
     onDelete: 'CASCADE',
     nullable: true,
+    cascade: true,
   })
   comments: Comment[];
 }
